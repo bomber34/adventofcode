@@ -1,7 +1,9 @@
 void main() {
     String input = getInput();
-    int countedFloors = countFloors(input);
+    int countedFloors = countFloors(input); // part 1
+    int firstBasementStep = getPositionOfFirstBasementStep(input); // part 2
     IO.println(String.format("Santa's floor is %d", countedFloors));
+    IO.println(String.format("Santa enters basement first on position %d", firstBasementStep));
 }
 
 private static String getInput() {
@@ -36,5 +38,26 @@ private static int countFloors(String input) {
         }
     }
     return count;
+}
+
+private static int getPositionOfFirstBasementStep(String input) {
+    int count = 0;
+    int firstBasementPosition = -1;
+    int index = 0;
+    for (char c : input.toCharArray()) {
+        index++;
+
+        if (c == '(') {
+            count++;
+        } else if (c == ')') {
+            count--;
+        }
+
+        if (count < 0) {
+            firstBasementPosition = index;
+            break;
+        }
+    }
+    return firstBasementPosition;
 }
 

@@ -5,7 +5,17 @@ void main() {
 }
 
 private static String getInput() {
-    return "TEXT"; // TODO: fetch input of santafloor_input
+    StringBuilder input = new StringBuilder();
+    File inputFile = new File("santafloor_input.txt");
+    try (Scanner reader = new Scanner(inputFile)) {
+        while (reader.hasNextLine()) {
+            input.append(reader.nextLine());
+        }
+    } catch (FileNotFoundException e) {
+        //noinspection CallToPrintStackTrace because of simplicity sake in regards to task
+        e.printStackTrace();
+    }
+    return input.toString();
 }
 
 /**
@@ -17,7 +27,14 @@ private static String getInput() {
  * @return int describing which floor Santa has to go to
  */
 private static int countFloors(String input) {
-
-    return input.length(); // TODO: Actually count floors
+    int count = 0;
+    for (char c : input.toCharArray()) {
+        if (c == '(') {
+            count++;
+        } else if (c == ')') {
+            count--;
+        }
+    }
+    return count;
 }
 

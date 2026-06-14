@@ -5,7 +5,7 @@ import spells.ISpell;
 
 import java.util.*;
 
-public class Wizard extends AbstractCharacter {
+public class Wizard extends AbstractCharacter implements IManaCharacter {
     // Wizard can cast any spells, but if that changes in the future,I am set :)
     private static final ESpells[] CASTABLE_SPELLS = ESpells.values();
     private static final ESpells CHEAPEST_SPELL = Arrays.stream(CASTABLE_SPELLS)
@@ -25,6 +25,16 @@ public class Wizard extends AbstractCharacter {
         _armor = toCopy._armor;
         _mana = toCopy._mana;
         _totalManaSpent = toCopy._totalManaSpent;
+    }
+
+    @Override
+    public void applyManaChange(int change) {
+        _mana += change;
+    }
+
+    @Override
+    public void addToTotalManaUsage(int mana) {
+        _totalManaSpent += mana;
     }
 
     /**

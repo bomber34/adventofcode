@@ -1,6 +1,7 @@
 package characters;
 
 import spells.ISpell;
+import spells.LastingSpell;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -31,7 +32,19 @@ public abstract class AbstractCharacter {
         this.maxHealth = toCopy.maxHealth;
         this._damage = toCopy._damage;
         this._health = toCopy._health;
-        _receivedSpells = new HashSet<>(toCopy._receivedSpells);
+        _receivedSpells =
+    }
+
+    private Set<ISpell> copyReceivedSpells(AbstractCharacter toCopy) {
+        HashSet<ISpell> copiedSpells = new HashSet<>();
+        for (ISpell spell : toCopy._receivedSpells) {
+
+        }
+        return new HashSet<>(toCopy._receivedSpells);
+    }
+
+    public void addArmor(int armor) {
+        _armor += armor;
     }
 
     /**
@@ -61,7 +74,14 @@ public abstract class AbstractCharacter {
         spell.apply(this);
 
         if (spell.isSpellOver()) {
-            _receivedSpells.remove(spell);
+            removeSpell(spell);
         }
+    }
+
+    private void removeSpell(ISpell spell) {
+        if (spell instanceof LastingSpell) {
+            ((LastingSpell) spell).onRemovingSpell(this);
+        }
+        _receivedSpells.remove(spell);
     }
 }

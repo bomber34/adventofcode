@@ -4,6 +4,7 @@ import spells.ESpells;
 import spells.ISpell;
 import spells.LastingSpell;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -49,8 +50,22 @@ public abstract class AbstractCharacter {
         return copiedSpells;
     }
 
+    public void applyLastingSpells() {
+        getActiveSpells().forEachRemaining(this::applyEffect);
+        removeInactiveSpells();
+    }
+
     public Iterator<ISpell> getActiveSpells() {
         return _receivedSpells.iterator();
+    }
+
+    private void removeInactiveSpells() {
+        ArrayList<ISpell> iterator = new ArrayList<>(_receivedSpells);
+        for (ISpell spell : iterator) {
+            if (spell.isSpellOver()) {
+                removeSpell(spell);
+            }
+        }
     }
 
     protected boolean isUnderEffectOfSpell(ESpells type) {
@@ -98,10 +113,6 @@ public abstract class AbstractCharacter {
 
     public void applyEffect(ISpell spell) {
         spell.apply(this);
-
-        if (spell.isSpellOver()) {
-            removeSpell(spell);
-        }
     }
 
     private void removeSpell(ISpell spell) {

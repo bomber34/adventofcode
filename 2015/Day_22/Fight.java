@@ -1,6 +1,7 @@
 import characters.AbstractCharacter;
 import characters.Wizard;
 import spells.ESpells;
+import spells.ISpell;
 
 import java.util.List;
 
@@ -69,7 +70,7 @@ public class Fight {
     }
 
     private void applyLastingSpells() {
-        _player.getActiveSpells().forEachRemaining(spell -> spell.apply(_player));
-        _enemy.getActiveSpells().forEachRemaining(spell -> spell.apply(_enemy));
+        _player.applyLastingSpells();
+        _enemy.applyLastingSpells();
     }
 }

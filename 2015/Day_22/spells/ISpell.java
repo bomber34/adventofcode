@@ -1,7 +1,10 @@
 package spells;
 
+import characters.AbstractCharacter;
+
 public interface ISpell {
-    void activate();
-    boolean isActivated();
-    void apply(Character c);
+    ESpells getType();
+    void apply(AbstractCharacter c);
+    boolean isSpellOver();
+    boolean isInstantEffect();
 }

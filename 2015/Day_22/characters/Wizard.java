@@ -1,7 +1,6 @@
 package characters;
 
-import spells.ESpells;
-import spells.ISpell;
+import spells.*;
 
 import java.util.*;
 
@@ -14,7 +13,7 @@ public class Wizard extends AbstractCharacter implements IManaCharacter {
     private int _mana;
     private int _totalManaSpent;
 
-    public Wizard(String name, int health, int mana, List<ISpell> spells) {
+    public Wizard(String name, int health, int mana) {
         super(name, health, 0);
         _mana = mana;
         _totalManaSpent = 0;
@@ -25,6 +24,35 @@ public class Wizard extends AbstractCharacter implements IManaCharacter {
         _armor = toCopy._armor;
         _mana = toCopy._mana;
         _totalManaSpent = toCopy._totalManaSpent;
+    }
+
+    public List<ESpells> getAvailableSpells(AbstractCharacter enemy) {
+        ArrayList<ESpells> availableSpells = new ArrayList<>();
+        for (ESpells spell : CASTABLE_SPELLS) {
+            if (spell.Cost <= _mana
+                && !this.isUnderEffectOfSpell(spell)
+                && !enemy.isUnderEffectOfSpell(spell)) {
+                availableSpells.add(spell);
+            }
+        }
+        return availableSpells;
+    }
+
+    @Override
+    public void castSpell(ESpells spellType, AbstractCharacter to) {
+        applyManaChange(-spellType.Cost);
+        addToTotalManaUsage(spellType.Cost);
+
+        switch (spellType) {
+            case MAGIC_MISSILE -> new MagicMissile().apply(to);
+            case DRAIN -> {
+                new Drain(false).apply(to);
+                new Drain(true).apply(this);
+            }
+            case RECHARGE -> this.addSpell(new Recharge(new SpellDuration(spellType.Duration)));
+            case POISON -> to.addSpell(new Poison(new SpellDuration(spellType.Duration)));
+            case SHIELD -> this.addSpell(new Shield(new SpellDuration(spellType.Duration)));
+        }
     }
 
     @Override
@@ -45,5 +73,9 @@ public class Wizard extends AbstractCharacter implements IManaCharacter {
     @Override
      public boolean isDefeated() {
         return super.isDefeated() || _mana < CHEAPEST_SPELL.Cost;
+    }
+
+    public int getTotalManaSpent() {
+        return _totalManaSpent;
     }
 }

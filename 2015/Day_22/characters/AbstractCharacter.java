@@ -1,9 +1,11 @@
 package characters;
 
+import spells.ESpells;
 import spells.ISpell;
 import spells.LastingSpell;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 public abstract class AbstractCharacter {
@@ -23,24 +25,48 @@ public abstract class AbstractCharacter {
         this._receivedSpells = new HashSet<>();
     }
 
-    public int getArmor() {
-        return _armor;
-    }
-
     public AbstractCharacter(AbstractCharacter toCopy) {
         this.name = toCopy.name;
         this.maxHealth = toCopy.maxHealth;
         this._damage = toCopy._damage;
         this._health = toCopy._health;
-        _receivedSpells =
+        _receivedSpells = copyReceivedSpells(toCopy);
+    }
+
+    public static AbstractCharacter copy(AbstractCharacter toCopy) {
+        return switch (toCopy) {
+            case Wizard w -> new Wizard(w);
+            case Boss b -> new Boss(b);
+            default -> throw new UnsupportedOperationException("Class not supported for copy");
+        };
     }
 
     private Set<ISpell> copyReceivedSpells(AbstractCharacter toCopy) {
         HashSet<ISpell> copiedSpells = new HashSet<>();
         for (ISpell spell : toCopy._receivedSpells) {
-
+            copiedSpells.add(ISpell.copy(spell));
         }
-        return new HashSet<>(toCopy._receivedSpells);
+        return copiedSpells;
+    }
+
+    public Iterator<ISpell> getActiveSpells() {
+        return _receivedSpells.iterator();
+    }
+
+    protected boolean isUnderEffectOfSpell(ESpells type) {
+        return _receivedSpells.stream().anyMatch(s -> s.getType() == type);
+    }
+
+    protected void addSpell(ISpell spell) {
+        _receivedSpells.add(spell);
+    }
+
+    public int getDamage() {
+        return _damage;
+    }
+
+    public int getArmor() {
+        return _armor;
     }
 
     public void addArmor(int armor) {

@@ -21,6 +21,7 @@ public class Poison extends LastingSpell {
 
     @Override
     public void apply(AbstractCharacter c) {
+        super.apply(c);
         c.receiveDamage(POISON_DAMAGE, 0);
     }
 }

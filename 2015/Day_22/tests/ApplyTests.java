@@ -1,6 +1,8 @@
 package tests;
 
+import battle.Fight;
 import characters.Boss;
+import characters.Wizard;
 import spells.ISpell;
 import spells.Shield;
 import spells.SpellDuration;
@@ -40,7 +42,37 @@ public class ApplyTests {
         IO.println("SUCCESS");
     }
 
+    void testExample() {
+        // Example 1
+        Boss boss = new Boss("TestBoss", 13, 8);
+        Wizard wizard = new Wizard("TestWizard", 10, 250);
+        /*
+         * Poison           --> 173
+         * Magic Missile    -->  53
+         * ------------------------
+         * 226?
+         */
+        int result = Fight.getLowestAmountOfManaSpent(new Fight(wizard, boss, false));
+        assert result == 226;
+
+        // Example 2
+        boss = new Boss("TestBoss", 14, 8);
+        wizard = new Wizard("TestWizard", 10, 250);
+        /*
+         * Recharge         --> 229
+         * Shield           --> 113
+         * Drain            --> 073
+         * Poison           --> 173
+         * Magic Missile    --> 053
+         * -------------------------
+         *                      641
+         */
+        result = Fight.getLowestAmountOfManaSpent(new Fight(wizard, boss, false));
+        assert result == 641;
+    }
+
     void main() {
         testLastTurnSpells();
+        testExample();
     }
 }
